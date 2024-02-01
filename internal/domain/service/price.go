@@ -21,7 +21,7 @@ func (s Service) GetResults(startDate time.Time, endDate time.Time) []model.Curr
 
 		highPriceIndex := 0
 		lowPriceIndex := 0
-		var sum float32 = 0
+		var sum float64 = 0
 		for index, price := range prices {
 			sum = sum + price
 			if price > prices[highPriceIndex] {
@@ -35,7 +35,7 @@ func (s Service) GetResults(startDate time.Time, endDate time.Time) []model.Curr
 		result.HighPrice = prices[highPriceIndex]
 		result.DateLowPrice = data.Dates[lowPriceIndex]
 		result.LowPrice = prices[lowPriceIndex]
-		result.AveragePrice = sum / float32(len(prices))
+		result.AveragePrice = sum / float64(len(prices))
 		results = append(results, result)
 	}
 	return results

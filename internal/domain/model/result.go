@@ -4,9 +4,9 @@ import "time"
 
 type CurrencyResult struct {
 	Name          string    `json:"name"`
-	HighPrice     float32   `json:"highPrice"`
+	HighPrice     float64   `json:"highPrice"`
 	DateHighPrice time.Time `json:"dateHighPrice"`
-	LowPrice      float32   `json:"lowPrice"`
+	LowPrice      float64   `json:"lowPrice"`
 	DateLowPrice  time.Time `json:"dateLowPrice"`
-	AveragePrice  float32   `json:"averagePrice"`
+	AveragePrice  float64   `json:"averagePrice"`
 }
