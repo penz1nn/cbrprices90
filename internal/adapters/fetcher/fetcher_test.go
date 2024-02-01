@@ -1,7 +1,7 @@
 package fetcher
 
 import (
-	"local/cbrprices/pkg/logger"
+	"cbrprices/pkg/logger"
 	"log/slog"
 	"testing"
 	"time"

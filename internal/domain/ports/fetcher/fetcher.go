@@ -1,7 +1,7 @@
 package fetcher
 
 import (
-	"local/cbrprices/internal/domain/dto"
+	"cbrprices/internal/domain/dto"
 	"time"
 )
 

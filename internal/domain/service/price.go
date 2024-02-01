@@ -1,8 +1,8 @@
 package service
 
 import (
-	"local/cbrprices/internal/domain/model"
-	"local/cbrprices/internal/domain/ports/fetcher"
+	"cbrprices/internal/domain/model"
+	"cbrprices/internal/domain/ports/fetcher"
 	"time"
 )
 

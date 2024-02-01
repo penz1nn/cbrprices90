@@ -2,9 +2,9 @@ package fetcher
 
 import (
 	"bytes"
+	"cbrprices/internal/domain/dto"
 	"encoding/xml"
 	"io"
-	"local/cbrprices/internal/domain/dto"
 	"log/slog"
 	"net/http"
 	"strconv"

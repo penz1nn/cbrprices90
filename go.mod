@@ -1,4 +1,4 @@
-module local/cbrprices
+module cbrprices
 
 go 1.20
 
