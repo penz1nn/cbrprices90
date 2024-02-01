@@ -37,10 +37,19 @@ type valCurs struct {
 }
 
 func (f fetcher) Fetch(startDate time.Time, endDate time.Time) dto.PricesDTO {
+	op := "fetcher/Fetch"
+	f.logger.With("operation", op)
 	result := dto.PricesDTO{}
+	result.Prices = map[string][]float64{}
+
 	date := startDate
+	f.logger.Debug("times are", slog.Any("date", date), slog.Any("endDate", endDate)) // TODO delete
 	for date.Before(endDate) {
 		result.Dates = append(result.Dates, date)
+		f.logger.Debug(
+			"getting data for one day...",
+			slog.Any("date", date.Format("2006.01.15")),
+		)
 		data := f.getDayData(date)
 		for _, valute := range data.Valute {
 			price, err := strconv.ParseFloat(
@@ -51,9 +60,12 @@ func (f fetcher) Fetch(startDate time.Time, endDate time.Time) dto.PricesDTO {
 				f.logger.Error("error reading float64 from XML data", slog.Any("error", err))
 				return dto.PricesDTO{}
 			}
+			f.logger.Debug("got price", slog.String("currency", valute.CharCode), slog.Float64("price", price))
 			result.Prices[valute.CharCode] = append(result.Prices[valute.CharCode], price)
 		}
+		date = date.Add(time.Hour * 24)
 	}
+	f.logger.Debug("got data", slog.Any("data", result))
 	return result
 }
 
@@ -61,7 +73,7 @@ func (f fetcher) getDayData(date time.Time) valCurs {
 	op := "fetcher/getDayData"
 	f.logger.With("operation", op)
 	urlBase := "http://www.cbr.ru/scripts/XML_daily_eng.asp?date_req="
-	dateStr := date.Format("25/01/2006")
+	dateStr := date.Format("02/01/2006")
 	url := urlBase + dateStr
 
 	request, err := http.NewRequest(http.MethodGet, url, nil)
@@ -83,7 +95,6 @@ func (f fetcher) getDayData(date time.Time) valCurs {
 		f.logger.Error("error reading HTTP response", slog.Any("error", err))
 		return valCurs{}
 	}
-	f.logger.Debug("read HTTP response body", slog.String("data", string(body)))
 
 	var result valCurs
 	reader := bytes.NewReader(body)
