@@ -43,7 +43,6 @@ func (f fetcher) Fetch(startDate time.Time, endDate time.Time) dto.PricesDTO {
 	result.Prices = map[string][]float64{}
 
 	date := startDate
-	f.logger.Debug("times are", slog.Any("date", date), slog.Any("endDate", endDate)) // TODO delete
 	for date.Before(endDate) {
 		result.Dates = append(result.Dates, date)
 		f.logger.Debug(
