@@ -40,3 +40,9 @@ func (s Service) GetResults(startDate time.Time, endDate time.Time) []model.Curr
 	}
 	return results
 }
+
+func NewService(f fetcher.Fetcher) Service {
+	return Service{
+		f: f,
+	}
+}
