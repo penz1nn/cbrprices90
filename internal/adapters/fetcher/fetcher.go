@@ -52,7 +52,7 @@ func (f fetcher) Fetch(startDate time.Time, endDate time.Time) dto.PricesDTO {
 		data := f.getDayData(date)
 		for _, valute := range data.Valute {
 			price, err := strconv.ParseFloat(
-				strings.ReplaceAll(valute.Value, ",", "."),
+				strings.ReplaceAll(valute.VunitRate, ",", "."),
 				64,
 			)
 			if err != nil {
