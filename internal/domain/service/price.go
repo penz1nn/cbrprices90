@@ -33,7 +33,7 @@ func (s Service) GetResult(startDate time.Time, endDate time.Time) (result model
 			result.MinRateCurrency = data.Names[index]
 			result.MinRateDate = data.Dates[index]
 		}
-		rubPriceSum = rubPriceSum + price
+		rubPriceSum = rubPriceSum + 1/price
 	}
 	result.AverageRubRate = rubPriceSum / float64(len(data.Prices))
 	return
