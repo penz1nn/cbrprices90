@@ -39,12 +39,4 @@ func TestFetcher_Fetch(t *testing.T) {
 	if len(data.Dates) < 1 || len(data.Prices) < 1 {
 		t.Error("Got empty data")
 	}
-	if len(data.Dates) != 30 {
-		t.Errorf("Should have got 30 days of data, got %d", len(data.Dates))
-	}
-	for currency, prices := range data.Prices {
-		if len(prices) != 30 {
-			t.Errorf("Should have 30 days of data but %s got %d", currency, len(prices))
-		}
-	}
 }

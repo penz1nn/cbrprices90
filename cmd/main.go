@@ -33,7 +33,7 @@ func main() {
 	log := logger.SetupLogger("prod")
 	fetcher := fetcher.New(log)
 	service := service.NewService(fetcher)
-	data := service.GetResults(startDate, endDate)
+	data := service.GetResult(startDate, endDate)
 
 	writeResults(data)
 }

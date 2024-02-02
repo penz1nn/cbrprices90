@@ -3,6 +3,7 @@ package service
 import (
 	"cbrprices/internal/domain/model"
 	"cbrprices/internal/domain/ports/fetcher"
+	"math"
 	"time"
 )
 
@@ -10,35 +11,32 @@ type Service struct {
 	f fetcher.Fetcher
 }
 
-func (s Service) GetResults(startDate time.Time, endDate time.Time) []model.CurrencyResult {
+type allPrices struct {
+	Dates  []time.Time
+	Prices []float64
+}
+
+func (s Service) GetResult(startDate time.Time, endDate time.Time) (result model.Result) {
 	data := s.f.Fetch(startDate, endDate)
+	result.MaxRatePrice = 0
+	result.MinRatePrice = math.MaxFloat64
+	var rubPriceSum float64 = 0
 
-	results := []model.CurrencyResult{}
-	for currency, prices := range data.Prices {
-		result := model.CurrencyResult{
-			Name: currency,
+	for index, price := range data.Prices {
+		if price > result.MaxRatePrice {
+			result.MaxRatePrice = price
+			result.MaxRateCurrency = data.Names[index]
+			result.MaxRateDate = data.Dates[index]
 		}
-
-		highPriceIndex := 0
-		lowPriceIndex := 0
-		var sum float64 = 0
-		for index, price := range prices {
-			sum = sum + price
-			if price > prices[highPriceIndex] {
-				highPriceIndex = index
-			}
-			if price < prices[lowPriceIndex] {
-				lowPriceIndex = index
-			}
+		if price < result.MinRatePrice {
+			result.MinRatePrice = price
+			result.MinRateCurrency = data.Names[index]
+			result.MinRateDate = data.Dates[index]
 		}
-		result.DateHighPrice = data.Dates[highPriceIndex]
-		result.HighPrice = prices[highPriceIndex]
-		result.DateLowPrice = data.Dates[lowPriceIndex]
-		result.LowPrice = prices[lowPriceIndex]
-		result.AveragePrice = sum / float64(len(prices))
-		results = append(results, result)
+		rubPriceSum = rubPriceSum + price
 	}
-	return results
+	result.AverageRubRate = rubPriceSum / float64(len(data.Prices))
+	return
 }
 
 func NewService(f fetcher.Fetcher) Service {

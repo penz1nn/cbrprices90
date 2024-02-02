@@ -7,8 +7,8 @@ import (
 	"fmt"
 )
 
-func writeResults(results []model.CurrencyResult) {
-	resultsJson, err := json.Marshal(results)
+func writeResults(result model.Result) {
+	resultsJson, err := json.Marshal(result)
 	if err != nil {
 		panic(err)
 	}

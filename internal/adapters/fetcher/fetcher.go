@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"cbrprices/internal/domain/dto"
 	"encoding/xml"
+	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
@@ -40,11 +41,9 @@ func (f fetcher) Fetch(startDate time.Time, endDate time.Time) dto.PricesDTO {
 	op := "fetcher/Fetch"
 	f.logger.With("operation", op)
 	result := dto.PricesDTO{}
-	result.Prices = map[string][]float64{}
 
 	date := startDate
 	for date.Before(endDate) {
-		result.Dates = append(result.Dates, date)
 		f.logger.Debug(
 			"getting data for one day...",
 			slog.Any("date", date.Format("2006.01.15")),
@@ -60,11 +59,17 @@ func (f fetcher) Fetch(startDate time.Time, endDate time.Time) dto.PricesDTO {
 				return dto.PricesDTO{}
 			}
 			f.logger.Debug("got price", slog.String("currency", valute.CharCode), slog.Float64("price", price))
-			result.Prices[valute.CharCode] = append(result.Prices[valute.CharCode], price)
+			result.Dates = append(result.Dates, date)
+			result.Names = append(result.Names, valute.CharCode)
+			result.Prices = append(result.Prices, price)
 		}
 		date = date.Add(time.Hour * 24)
 	}
-	f.logger.Debug("got data", slog.Any("data", result))
+	// f.logger.Debug("got data", slog.Any("data", result))
+	if len(result.Dates) != len(result.Prices) ||
+		len(result.Prices) != len(result.Names) {
+		panic(fmt.Errorf("Got inequal number of prices vs dates!"))
+	}
 	return result
 }
 
